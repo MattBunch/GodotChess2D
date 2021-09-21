@@ -10,24 +10,30 @@ config_version=4
 
 _global_script_classes=[ {
 "base": "Node2D",
-"class": "Board",
-"language": "GDScript",
-"path": "res://Board/Board.gd"
-}, {
-"base": "Node2D",
 "class": "BoardTile",
 "language": "GDScript",
 "path": "res://Board/BoardTile.gd"
+}, {
+"base": "Node2D",
+"class": "ChessPieceBase",
+"language": "GDScript",
+"path": "res://Pieces/ChessPieceBase.gd"
+}, {
+"base": "Node2D",
+"class": "Game",
+"language": "GDScript",
+"path": "res://Game.gd"
 } ]
 _global_script_class_icons={
-"Board": "",
-"BoardTile": ""
+"BoardTile": "",
+"ChessPieceBase": "",
+"Game": ""
 }
 
 [application]
 
 config/name="Chess2D"
-run/main_scene="res://Board/Board.tscn"
+run/main_scene="res://Game.tscn"
 config/icon="res://icon.png"
 
 [physics]

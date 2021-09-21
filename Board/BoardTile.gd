@@ -1,20 +1,58 @@
 extends Node2D
 class_name BoardTile
 
+# TODO:
+# ?
+# 	refactor Boardtile to have Area2D at base, no point in BoardTile node at the head
+# 	so add this script to the Area2D object instead
+#
+# Each BoardTile will need a chess piece object rendered on it
+# * create init_board_piece func, create board piece
+# * create remove_board_piece func, remove board piece, called when piece moved or removed from board
+# * create has_board_piece func, return bool of whether board_piece is taken 
+
+# variables
+var selected = false setget set_selected, get_selected
+var tile_code setget set_tile_code, get_tile_code
+var board_piece
+# NOTE: you can also get position as a setget later in the file
+
+# signal
 signal clicked_tile
 
-var selected = false
-var tile_code setget set_tile_code, get_tile_code
-
-func init(input_tile_code):
-	var debugLabel = $Area2D/DebugLabel
+func init(input_tile_code, white):
+	# Initialize colored square
+	var sprite = Sprite.new()
+	sprite.centered = false
+	sprite.z_index = 1
+	sprite.texture = load("res://Assets/White_Square_60px.png") if (white) else load("res://Assets/Black_Square_60px.png")
+	$Area2D.add_child(sprite)
+	
+	# Initialize tile code/notation
+	var labelContainer = $Area2D/LabelContainer
+	var debugLabel = $Area2D/LabelContainer/BoardNotation
 	debugLabel.add_color_override("font_color", Color(255, 0, 0))
 	set_tile_code(input_tile_code)
 	debugLabel.text = get_tile_code()
-
+	labelContainer.z_index = 2
+	
+	
 func _on_Area2D_input_event(viewport, event, shape_idx):
 	if (event is InputEventMouseButton && event.button_index == BUTTON_LEFT && event.pressed):
 		emit_signal("clicked_tile", position, get_tile_code())
+
+#
+#
+#   _____      _   _                            _____      _   _                
+#  / ____|    | | | |                  ___     / ____|    | | | |               
+# | |  __  ___| |_| |_ ___ _ __ ___   ( _ )   | (___   ___| |_| |_ ___ _ __ ___ 
+# | | |_ |/ _ \ __| __/ _ \ '__/ __|  / _ \/\  \___ \ / _ \ __| __/ _ \ '__/ __|
+# | |__| |  __/ |_| ||  __/ |  \__ \ | (_>  <  ____) |  __/ |_| ||  __/ |  \__ \
+#  \_____|\___|\__|\__\___|_|  |___/  \___/\/ |_____/ \___|\__|\__\___|_|  |___/
+#
+#
+#
+
 
 func set_tile_code(input_tile_code):
 	tile_code = input_tile_code
