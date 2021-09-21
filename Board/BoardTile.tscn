@@ -1,6 +1,5 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=3 format=2]
 
-[ext_resource path="res://icon.png" type="Texture" id=1]
 [ext_resource path="res://Board/BoardTile.gd" type="Script" id=2]
 
 [sub_resource type="RectangleShape2D" id=1]
@@ -19,12 +18,10 @@ position = Vector2( 30, 30 )
 scale = Vector2( 6, 1 )
 shape = SubResource( 1 )
 
-[node name="DebugSprite" type="Sprite" parent="Area2D"]
-visible = false
-texture = ExtResource( 1 )
-centered = false
+[node name="LabelContainer" type="Node2D" parent="Area2D"]
+z_index = 2
 
-[node name="DebugLabel" type="Label" parent="Area2D"]
+[node name="BoardNotation" type="Label" parent="Area2D/LabelContainer"]
 margin_left = 3.0
 margin_top = 2.57322
 margin_right = 44.0
