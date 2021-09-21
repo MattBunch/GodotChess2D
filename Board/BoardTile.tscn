@@ -4,7 +4,7 @@
 [ext_resource path="res://Board/BoardTile.gd" type="Script" id=2]
 
 [sub_resource type="RectangleShape2D" id=1]
-extents = Vector2( 5.32233, 31.906 )
+extents = Vector2( 4.95833, 29.75 )
 
 [node name="BoardTile" type="Node2D" groups=[
 "Tiles",
@@ -15,19 +15,20 @@ script = ExtResource( 2 )
 z_index = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
-position = Vector2( 32, 32 )
+position = Vector2( 30, 30 )
 scale = Vector2( 6, 1 )
 shape = SubResource( 1 )
 
 [node name="DebugSprite" type="Sprite" parent="Area2D"]
+visible = false
 texture = ExtResource( 1 )
 centered = false
 
 [node name="DebugLabel" type="Label" parent="Area2D"]
-margin_left = 4.5
-margin_top = 5.25
-margin_right = 45.5
-margin_bottom = 22.25
+margin_left = 3.0
+margin_top = 2.57322
+margin_right = 44.0
+margin_bottom = 19.5732
 __meta__ = {
 "_edit_use_anchors_": false
 }

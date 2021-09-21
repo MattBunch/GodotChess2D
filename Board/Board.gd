@@ -15,18 +15,18 @@ func connect_tiles():
 	for tile in tiles:
 		tile.connect("clicked_tile",self,"clicked_tile")
 
-func clicked_tile(pos):
+func clicked_tile(pos, tile_code):
 	
 	var tile = get_tile_at_pos(pos)
 	if saved_tile == tile:
-		print("same tile")
+		print("same tile: ", saved_tile.get_tile_code())
 		return
 	if saved_tile == null:
 		saved_tile = tile
-		print("tile saved: ", saved_tile.get_position())
+		print("tile saved: ", saved_tile.get_tile_code())
 	else:
-		print("tile: ",tile.get_position())
-		print("saved_tile: ",saved_tile.get_position())
+		print("tile: ",tile.get_tile_code())
+		print("saved_tile: ",saved_tile.get_tile_code())
 		saved_tile = null
 
 func get_tile_at_pos(pos):
@@ -38,16 +38,20 @@ func get_tile_at_pos(pos):
 	return null
 
 func initialize_board():
-	func build_chess_notation():
-		pass
+	var A = 65
+	var startNum = 8
 	var output = []
-	var counter = 0
+	var numCounter = startNum
+	var charCounter = A
 	for x in range(0, BOARD_SIZE, BOARD_SIZE / 8):
+		numCounter = startNum
 		for y in range(0, BOARD_SIZE, BOARD_SIZE / 8):
-			counter += 1
 			var new_tile = load("res://Board/BoardTile.tscn").instance()
-			new_tile.init(counter)
+			var tileCode = char(charCounter) + str(numCounter)
+			new_tile.init(tileCode)
 			add_child(new_tile)
 			new_tile.set_tile_position(Vector2(x, y))
 			output.append([x, y])
+			numCounter -= 1
+		charCounter += 1
 	return output
