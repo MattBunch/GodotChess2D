@@ -48,7 +48,7 @@ func init(input_tile_code, white):
 	$Area2D.add_child(selected_tile_sprite)
 
 
-func _on_Area2D_input_event(viewport, event, shape_idx):
+func _on_Area2D_input_event(_viewport, event, _shape_idx):
 	if (event is InputEventMouseButton && event.button_index == BUTTON_LEFT && event.pressed):
 		emit_signal("clicked_tile", position, get_tile_code())
 
