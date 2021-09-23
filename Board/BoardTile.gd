@@ -15,6 +15,8 @@ class_name BoardTile
 var selected = false setget set_selected, get_selected
 var tile_code setget set_tile_code, get_tile_code
 var board_piece
+var selected_tile_sprite setget set_selected_tile_sprite, get_selected_tile_sprite
+var tile_has_selected_square = false setget set_tile_has_selected_square, get_tile_has_selected_square
 # NOTE: you can also get position as a setget later in the file
 
 # signal
@@ -36,10 +38,20 @@ func init(input_tile_code, white):
 	debugLabel.text = get_tile_code()
 	labelContainer.z_index = 2
 	
-	
+	# Initialize select sprite
+	var selectSprite = Sprite.new()
+	selectSprite.centered = false
+	selectSprite.z_index = 4
+	selectSprite.texture = load("res://Assets/Selected_Square_60px.png")
+	selectSprite.visible = false
+	set_selected_tile_sprite(selectSprite)
+	$Area2D.add_child(selected_tile_sprite)
+
+
 func _on_Area2D_input_event(viewport, event, shape_idx):
 	if (event is InputEventMouseButton && event.button_index == BUTTON_LEFT && event.pressed):
 		emit_signal("clicked_tile", position, get_tile_code())
+
 
 #
 #
@@ -68,6 +80,28 @@ func get_tile_position():
 
 func set_selected(inputSelected):
 	selected = inputSelected
+	if get_selected():
+		show_selected_square()
+	else:
+		hide_selected_square()
 
 func get_selected():
 	return selected
+
+func set_selected_tile_sprite(input):
+	selected_tile_sprite = input
+
+func get_selected_tile_sprite():
+	return selected_tile_sprite
+
+func show_selected_square():
+	get_selected_tile_sprite().visible = true
+
+func hide_selected_square():
+	get_selected_tile_sprite().visible = false
+
+func set_tile_has_selected_square(input):
+	tile_has_selected_square = input
+
+func get_tile_has_selected_square():
+	return tile_has_selected_square

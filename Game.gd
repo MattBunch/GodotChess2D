@@ -17,22 +17,52 @@ func connect_tiles():
 		tile.connect("clicked_tile",self,"clicked_tile")
 
 func clicked_tile(pos, tile_code):
-	var tile = get_tile_at_pos(pos)
+	# TODO: change these tiles' commands into individual functions 
+	# eg:
+		# select square
+		# deselect square
+		# process move
+
+	var tile = get_tile_at_code(tile_code)
+
 	if saved_tile == tile:
 		print("same tile: ", saved_tile.get_tile_code())
+		unselect_tile()
 		return
+
 	if saved_tile == null:
-		saved_tile = tile
+		select_tile(tile)
 		print("tile saved: ", saved_tile.get_tile_code())
+		
 	else:
 		print("tile: ",tile.get_tile_code())
 		print("saved_tile: ",saved_tile.get_tile_code())
-		saved_tile = null
+		# TODO: process moves between the two tiles here
+		# if tile is empty or tile contains piece of the same color, select new tile
+		# elif tile has enemy piece check if can move
+		unselect_tile()
 
+func select_tile(tile):
+	saved_tile = tile
+	saved_tile.set_selected(true)
+
+func unselect_tile():
+	saved_tile.set_selected(false)
+	saved_tile = null
+
+# TODO: possibly delete this func since I am now moving to code based selection of tiles
 func get_tile_at_pos(pos):
 	for tile in tiles:
 		if tile != null:
 			if tile.get_position() == pos:
+				return tile
+	
+	return null
+
+func get_tile_at_code(code):
+	for tile in tiles:
+		if tile != null:
+			if tile.get_tile_code() == code:
 				return tile
 	
 	return null

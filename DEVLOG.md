@@ -22,3 +22,7 @@ Interesting to note that GDScript has a ternary operator.
 The board will need to flipped and rendered differently based on player white and player black. Thinking about how this is going to be accomplished in code, with a base function ```initialize_board_main``` and then two functions to call main with the different values for board colors, piece placement and tile notations.
 
 Next challenge will be creating the chess pieces on the board and their movesets. Then I will tackle player moves and turns.
+
+## 23/09/2021
+
+Added highlight select squares to show which tile is being selected.

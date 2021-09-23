@@ -4,7 +4,7 @@ class_name ChessPieceBase
 var player
 var tile_code
 var first_move = true
-var availalbe_moves = []
+var available_moves = [] setget set_available_moves, get_available_moves
 
 func _ready():
 	print("I am a base piece and I am initialized")
@@ -16,4 +16,10 @@ func move():
 	pass
 
 func update_available_moves():
+	pass
+
+func get_available_moves():
+	pass
+	
+func set_available_moves(input):
 	pass
