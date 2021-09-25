@@ -1,4 +1,7 @@
-extends ChessPieceBase # "res://Pieces/ChessPieceBase.gd"
+extends ChessPieceBase 
+
+var can_promote = false
+var first_move = true
 
 func _ready():
 	print("I am a pawn and I am initialized")

@@ -5,16 +5,16 @@ const BOARD_SIZE = 480
 
 # array to hold all tiles
 # can't use onready because board has to be initialized first
-var tiles
+onready var tiles = initialize_board()
 
 # tile that user clicks on
 var saved_tile
 
-func _ready():
-	initialize_board()
-	tiles = get_tree().get_nodes_in_group("Tiles")
+# turn system
+var turn = "white"
+var turn_count = 1
 
-func clicked_tile(pos, tile_code):
+func clicked_tile(tile_code):
 	# TODO: change these tiles' commands into individual functions 
 	# eg:
 		# process move
@@ -28,6 +28,8 @@ func clicked_tile(pos, tile_code):
 	elif saved_tile == null:
 		select_tile(tile)
 		print("tile saved: ", saved_tile.get_tile_code())
+		# TODO: if tile has piece, show piece's available moves here:
+		
 
 	else:
 		print("tile: ",tile.get_tile_code())
@@ -41,10 +43,13 @@ func clicked_tile(pos, tile_code):
 		# move_piece()
 		# TODO: function also needs to log move in movements
 		# log_move(tile, saved_tile)
+		# TODO: progress turn
+		# next_turn()
 
 func select_tile(tile):
 	saved_tile = tile
 	saved_tile.set_selected(true)
+	print(saved_tile.has_board_piece())
 
 func unselect_tile():
 	saved_tile.set_selected(false)
@@ -67,8 +72,6 @@ func get_tile_at_code(code):
 	
 	return null
 
-# REFACTOR: tiles is already an array of all tiles on page when they get created, 
-# so this function doesn't need to return anything
 func initialize_board():
 	var A = 65
 	var startNum = 8
@@ -93,6 +96,12 @@ func initialize_board():
 		charCounter += 1
 	return output
 
+# helper function for initializing pieces
+func load_piece(piece_scene_location, tile, color):
+	var piece = load(piece_scene_location).instance()
+	piece.init(color, tile.get_tile_code())
+	tile.place_piece(piece)
+
 # TODO: initialize piece
 func initialize_piece(col, row, tile):
 	
@@ -100,51 +109,33 @@ func initialize_piece(col, row, tile):
 	match row:
 		# White back row pieces
 		1:
-			match col:
-				"A":
-					print("rook")
-				"B":
-					print("knight")
-				"C":
-					print("bishop")
-				"D":
-					print("king")
-				"E":
-					print("queen")
-				"F":
-					print("bishop")
-				"G":
-					print("knight")
-				"H":
-					print("rook")
-					
+			initialize_back_pieces(col, tile, "white")
 		# White pawns
 		2:
-			print("white pawn: ", row, col)
+			load_piece("res://Pieces/Pawn.tscn", tile, "white")
 			
 		# Black pawns
 		7:
-			print("black pawn: ", row, col)
+			load_piece("res://Pieces/Pawn.tscn", tile, "black")
 			
 		# Black back row pieces 
 		8: 
-			match col:
-				"A":
-					print("rook")
-				"B":
-					print("knight")
-				"C":
-					print("bishop")
-				"D":
-					print("king")
-				"E":
-					print("queen")
-				"F":
-					print("bishop")
-				"G":
-					print("knight")
-				"H":
-					print("rook")
+			initialize_back_pieces(col, tile, "black")
+
+func initialize_back_pieces(col, tile, color):
+	if (col == "A" || col == "H"):
+		load_piece("res://Pieces/Rook.tscn", tile, color)
+	elif (col == "B" || col == "G"):
+		load_piece("res://Pieces/Knight.tscn", tile, color)
+	elif (col == "C" || col == "F"):
+		load_piece("res://Pieces/Bishop.tscn", tile, color)
+	match col:
+		"D":
+			load_piece("res://Pieces/King.tscn", tile, color)
+		"E":
+			load_piece("res://Pieces/Queen.tscn", tile, color)
+
+
 
 func show_available_moves():
 	pass

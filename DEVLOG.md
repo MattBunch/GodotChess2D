@@ -26,3 +26,7 @@ Next challenge will be creating the chess pieces on the board and their movesets
 ## 23/09/2021
 
 Added highlight select squares to show which tile is being selected.
+
+## 25/09/2021
+
+Pieces added. Sprites are in the 1x folder. Need to delete superfluous assets.

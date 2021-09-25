@@ -1,0 +1,21 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://Pieces/ChessPieceBase.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Pieces/Bishop.gd" type="Script" id=2]
+[ext_resource path="res://Assets/Pieces/PNGs/With Shadow/1x/w_bishop_1x.png" type="Texture" id=3]
+[ext_resource path="res://Assets/Pieces/PNGs/With Shadow/1x/b_bishop_1x.png" type="Texture" id=4]
+
+[node name="Bishop" instance=ExtResource( 1 )]
+script = ExtResource( 2 )
+
+[node name="WhiteSprite" type="Sprite" parent="." index="0"]
+scale = Vector2( 0.159382, 0.156383 )
+z_index = 5
+texture = ExtResource( 3 )
+centered = false
+
+[node name="BlackSprite" type="Sprite" parent="." index="1"]
+scale = Vector2( 0.146421, 0.146283 )
+z_index = 5
+texture = ExtResource( 4 )
+centered = false

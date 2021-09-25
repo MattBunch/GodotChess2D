@@ -1,22 +1,22 @@
 extends Node2D
 class_name BoardTile
 
-# TODO:
 # ?
 # 	refactor Boardtile to have Area2D at base, no point in BoardTile node at the head
 # 	so add this script to the Area2D object instead
 #
 # Each BoardTile will need a chess piece object rendered on it
-# * create init_board_piece func, create board piece
-# * create remove_board_piece func, remove board piece, called when piece moved or removed from board
+# * create place_piece func, create board piece
+# * create remove_piece func, remove board piece, called when piece moved or removed from board
 # * create has_board_piece func, return bool of whether board_piece is taken 
 
-# variables
+# !!! variables !!!
 var selected = false setget set_selected, get_selected
 var tile_code setget set_tile_code, get_tile_code
-var board_piece
 var selected_tile_sprite setget set_selected_tile_sprite, get_selected_tile_sprite
 var tile_has_selected_square = false setget set_tile_has_selected_square, get_tile_has_selected_square
+
+var board_piece
 # NOTE: you can also get position as a setget later in the file
 
 # signal
@@ -47,10 +47,20 @@ func init(input_tile_code, white):
 	set_selected_tile_sprite(selectSprite)
 	$Area2D.add_child(selected_tile_sprite)
 
+func place_piece(piece):
+	$Area2D.add_child(piece)
+	board_piece = piece
+
+func remove_piece(piece):
+	$Area2D.remove_child(piece)
+	board_piece = null
+
+func has_board_piece():
+	return self.board_piece != null
 
 func _on_Area2D_input_event(_viewport, event, _shape_idx):
 	if (event is InputEventMouseButton && event.button_index == BUTTON_LEFT && event.pressed):
-		emit_signal("clicked_tile", position, get_tile_code())
+		emit_signal("clicked_tile", get_tile_code())
 
 
 #
