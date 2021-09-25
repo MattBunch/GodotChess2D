@@ -4,8 +4,9 @@ class_name Game
 const BOARD_SIZE = 480
 
 # array to hold all tiles
-# can't use onready because board has to be initialized first
+# REFACTOR: rename to board
 onready var tiles = initialize_board()
+onready var label = initialize_info_board()
 
 # tile that user clicks on
 var saved_tile
@@ -13,6 +14,10 @@ var saved_tile
 # turn system
 var turn = "white"
 var turn_count = 1
+
+# piece has to have its available moves updated after the tiles on the board has all been initialized
+func _ready():
+	update_all_pieces_available_moves()
 
 func clicked_tile(tile_code):
 	# TODO: change these tiles' commands into individual functions 
@@ -27,7 +32,6 @@ func clicked_tile(tile_code):
 
 	elif saved_tile == null:
 		select_tile(tile)
-		print("tile saved: ", saved_tile.get_tile_code())
 		# TODO: if tile has piece, show piece's available moves here:
 		
 
@@ -35,25 +39,101 @@ func clicked_tile(tile_code):
 		print("tile: ",tile.get_tile_code())
 		print("saved_tile: ",saved_tile.get_tile_code())
 		# TODO: process moves between the two tiles here
-		# if tile is empty that the selected tile can't move to or tile contains piece of the same color, 
+		
+		# if tile is empty that the selected tile can't move to or tile contains piece of the same color,
+#		if (!saved_tile.has_board_piece() || saved_tile.get_board_piece().get_available_moves().has(tile.get_tile_code())):
+#			print("\nSELECTING NEW TILE")
+			
 		# select the new targeted tile
-		unselect_tile()
-		select_tile(tile)
 		# elif target tile is place the piece can move to (empty or contains enemy), process move
-		# move_piece()
+		if (saved_tile.has_board_piece() && saved_tile.get_board_piece().get_color() == turn
+		&& saved_tile.get_board_piece().get_available_moves().has(tile.get_tile_code())):
+			# move_piece()
+			print("\nMOVING PIECE: ", saved_tile.get_tile_code(), tile.get_tile_code())
+			var moving_piece = saved_tile.get_board_piece()
+			saved_tile.remove_piece(moving_piece)
+			if (tile.has_board_piece()):
+				tile.remove_piece(tile.get_board_piece())
+			tile.place_piece(moving_piece, tiles)
+			moving_piece.add_to_move_history(saved_tile.get_tile_code())
+			moving_piece.set_tile_code(tile.get_tile_code())
+			moving_piece.move()
+			# TODO: get check/checkmate status here, find how to affect available moves somehow
+			# if double checked:
+				# only king can move
+			# elif single checked
+#				Capture of checking piece. The capturing piece is not absolutely pinned
+#				King moves to non attacked squares, sliding check x-rays the king
+#    			Interposing moves in case of distant sliding check. The moving piece is not absolutely pinned.
+			update_all_pieces_available_moves()
+			check_handler()
+			hide_available_moves()
+			next_turn()
+		# else select new tile
+		else:
+			print("\nSELECTING NEW TILE")
+			unselect_tile()
+			select_tile(tile)
+			
 		# TODO: function also needs to log move in movements
 		# log_move(tile, saved_tile)
 		# TODO: progress turn
 		# next_turn()
 
+func next_turn():
+	turn_count += 1
+	if turn_count % 2 == 0:
+		turn = "black"
+	elif turn_count % 1 == 0:
+		turn = "white"
+	label.text = get_info_text()
+
 func select_tile(tile):
 	saved_tile = tile
 	saved_tile.set_selected(true)
-	print(saved_tile.has_board_piece())
+	if (saved_tile.has_board_piece() && tile.get_board_piece().get_color() == turn):
+		var moves = saved_tile.get_board_piece().get_available_moves()
+		show_available_moves(moves)
+		print("moves: ", moves)
+		print("I have a piece: ", saved_tile.get_board_piece().get_name())
+	print("saved_tile.has_board_piece: ", saved_tile.has_board_piece())
+	print("tile saved: ", saved_tile.get_tile_code())
 
 func unselect_tile():
 	saved_tile.set_selected(false)
 	saved_tile = null
+	hide_available_moves()
+
+# will draw sprite on each tile
+func show_available_moves(moves):
+	for tile in tiles:
+		for move in moves:
+			if (tile.get_tile_code() == move):
+				print('Match: ', move)
+				tile.show_move_sprite()
+
+func hide_available_moves():
+	for tile in tiles:
+		tile.hide_move_sprite()
+
+func update_all_pieces_available_moves():
+	for tile in tiles:
+		if (tile.has_board_piece()):
+			tile.get_board_piece().update_available_moves(tiles, get_occupied_tiles(tile, true), get_occupied_tiles(tile, false))
+
+# REFACTOR: for loop is a little repetitive
+func get_occupied_tiles(inputTile, enemy):
+	var output = []
+	for tile in tiles:
+		if tile.has_board_piece():
+			if enemy:
+				if tile.get_board_piece().get_color() != inputTile.get_board_piece().get_color():
+					output.append(tile.get_tile_code())
+			else:
+				if tile.get_board_piece().get_color() == inputTile.get_board_piece().get_color():
+					output.append(tile.get_tile_code())
+	
+	return output
 
 # REFACTOR: possibly delete this func since I am now moving to code based selection of tiles
 func get_tile_at_pos(pos):
@@ -72,6 +152,22 @@ func get_tile_at_code(code):
 	
 	return null
 
+func check_handler():
+	for tile in tiles:
+		if tile.has_board_piece():
+			var piece = tile.get_board_piece()
+			if piece.get_name() == "King":
+				print(piece.is_in_check(tiles))
+
+#  _____       _ _   _       _ _          _   _             
+# |_   _|     (_) | (_)     | (_)        | | (_)            
+#   | |  _ __  _| |_ _  __ _| |_ ______ _| |_ _  ___  _ __  
+#   | | | '_ \| | __| |/ _` | | |_  / _` | __| |/ _ \| '_ \ 
+#  _| |_| | | | | |_| | (_| | | |/ / (_| | |_| | (_) | | | |
+# |_____|_| |_|_|\__|_|\__,_|_|_/___\__,_|\__|_|\___/|_| |_|
+#
+
+
 func initialize_board():
 	var A = 65
 	var startNum = 8
@@ -84,9 +180,10 @@ func initialize_board():
 		white = !white
 		for y in range(0, BOARD_SIZE, BOARD_SIZE / 8):
 			var new_tile = load("res://Board/BoardTile.tscn").instance()
-			var tileCode = char(charCounter) + str(numCounter)
+			var col = char(charCounter)
+			var tileCode = col + str(numCounter)
 			new_tile.init(tileCode, white)
-			initialize_piece(char(charCounter), numCounter, new_tile)
+			initialize_piece(col, numCounter, new_tile)
 			add_child(new_tile)
 			new_tile.set_tile_position(Vector2(x, y))
 			new_tile.connect("clicked_tile",self,"clicked_tile")
@@ -100,11 +197,10 @@ func initialize_board():
 func load_piece(piece_scene_location, tile, color):
 	var piece = load(piece_scene_location).instance()
 	piece.init(color, tile.get_tile_code())
-	tile.place_piece(piece)
+	tile.place_piece(piece, tiles)
 
 # TODO: initialize piece
 func initialize_piece(col, row, tile):
-	
 #	TODO: initialize tile on this piece eg. tile.place_piece()
 	match row:
 		# White back row pieces
@@ -119,7 +215,7 @@ func initialize_piece(col, row, tile):
 			load_piece("res://Pieces/Pawn.tscn", tile, "black")
 			
 		# Black back row pieces 
-		8: 
+		8:
 			initialize_back_pieces(col, tile, "black")
 
 func initialize_back_pieces(col, tile, color):
@@ -134,8 +230,14 @@ func initialize_back_pieces(col, tile, color):
 			load_piece("res://Pieces/King.tscn", tile, color)
 		"E":
 			load_piece("res://Pieces/Queen.tscn", tile, color)
+			
+func get_info_text():
+	return "turn: " + turn + "\n" + "turn count: " + str(turn_count)
 
-
-
-func show_available_moves():
-	pass
+func initialize_info_board():
+	var new_label = Label.new()
+	new_label.text = get_info_text()
+	new_label.rect_position = Vector2(500, 0)
+	add_child(new_label)
+	return new_label
+	

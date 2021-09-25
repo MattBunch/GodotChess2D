@@ -13,7 +13,46 @@ func _ready():
 func move():
 	pass
 
+func update_available_moves(board, enemy_occupied_tiles, friendly_occupied_tiles):
+	
+#	var code_above_take_right = char(ord(get_col()) + 1)  + str(int(get_row()) + 1)
+#	var code_above_take_left = char(ord(get_col()) - 1) + str(int(get_row()) + 1) 
+	set_available_moves([])
+	# up left = row + 2 col - 1 
+	# up right = row + 2 col + 1
+	var code_up_left = char(ord(get_col()) - 1)  + str(int(get_row()) + 2)
+	var code_up_right = char(ord(get_col()) + 1)  + str(int(get_row()) + 2)
+	
+	# down left = row - 2 col - 1 
+	# down right = row - 2 col + 1 
+	
+	var code_down_left = char(ord(get_col()) - 1)  + str(int(get_row()) - 2)
+	var code_down_right = char(ord(get_col()) + 1)  + str(int(get_row()) - 2)
+	
+	# left up row + 1 col + 2
+	# left down row - 1 col + 2
+	
+	var code_left_up = char(ord(get_col()) + 2)  + str(int(get_row()) + 1)
+	var code_left_down = char(ord(get_col()) + 2)  + str(int(get_row()) - 1)
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
+	# right up row + 1 col - 2
+	# right down row - 1 col - 2
+	var code_right_up = char(ord(get_col()) - 2)  + str(int(get_row()) + 1)
+	var code_right_down = char(ord(get_col()) - 2)  + str(int(get_row()) - 1)
+
+	
+	var output = [
+		code_up_left,
+		code_up_right,
+		code_down_left,
+		code_down_right,
+		code_left_up,
+		code_left_down,
+		code_right_up,
+		code_right_down
+		]
+	
+	remove_friendly_occupied_tiles(output, friendly_occupied_tiles)
+	
+	set_available_moves(output)
+

@@ -1,16 +1,12 @@
 extends ChessPieceBase 
 
+func update_available_moves(board, enemy_occupied_tiles, friendly_occupied_tiles):
 
-# Declare member variables here. Examples:
-# var a = 2
-# var b = "text"
+	set_available_moves([])
+	var output = []
 
-
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	pass # Replace with function body.
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
+	var diagonal_moves = get_all_diagonal_moves(board)
+	
+	output = diagonal_moves
+	
+	set_available_moves(output)

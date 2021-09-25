@@ -29,4 +29,6 @@ Added highlight select squares to show which tile is being selected.
 
 ## 25/09/2021
 
-Pieces added. Sprites are in the 1x folder. Need to delete superfluous assets.
+Pieces added. Sprites are in the 1x folder. Need to delete superfluous assets from Assets folder.
+
+Did lots of piece logic and movement today. Got stuck on why the horizontal, vertical and diagonal moves weren't getting stopped by the other pieces
