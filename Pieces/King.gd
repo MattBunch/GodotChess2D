@@ -1,17 +1,20 @@
 extends ChessPieceBase 
 
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	pass # Replace with function body.
-	
+var can_check = true
+
+func move():
+	can_check = false
+
 func is_in_check(board):
 	for tile in board:
 		if tile.has_board_piece():
 			var piece = tile.get_board_piece()
 			if piece.get_color() != get_color():
 				if piece.get_available_moves().has(get_tile_code()):
-					return get_color() + " king" + " is in check"
-	return get_color() + " king" + " is NOT in check"
+					print(get_color() + " king" + " is in check")
+					return [self, piece.get_available_moves()]
+	print(get_color() + " king" + " is NOT in check")
+	return false
 
 func update_available_moves(_board, _enemy_occupied_tiles, friendly_occupied_tiles):
 	# just get every surrounding note code

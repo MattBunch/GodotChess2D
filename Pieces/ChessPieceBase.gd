@@ -34,39 +34,78 @@ func remove_friendly_occupied_tiles(input_available_moves, friendly_occupied_til
 			if move == friendly_tile:
 				input_available_moves.erase(move)
 
+# remove moves that don't affect check
+func remove_moves_for_check(check_moves):
+	var output
+	for move in get_available_moves():
+		for check_move in check_moves:
+			if move == check_move:
+				output.append(move)
+	
+	set_available_moves(output)
+
 # rooks (horizontal, vertical), bishops(diagonal) queens (uses both)
 
 func get_all_vertical_moves(board, enemy_occupied_tiles, friendly_occupied_tiles):
-	# negative
 	var output = []
+	# negative
+	var row_num_neg = int(get_row())
+	var is_blocked_neg = false
 	
-	for n in range(8, get_row(), -1):
-		var tile_code = get_col() + str(n)
-		output.append(tile_code)
+	while(row_num_neg > 0):
+		row_num_neg -= 1
+		var tile_code = get_col() + str(row_num_neg)
 		
+		if !(is_blocked_neg):
+			is_blocked_neg = check_for_piece(tile_code, board, output)
+		
+		if !(is_blocked_neg):
+			output.append(tile_code)
+	
 	
 	# positive
-	for n in range(1, get_row()):
-		var tile_code = get_col() + str(n)
-		output.append(tile_code)
+	var row_num_pos = int(get_row())
+	var is_blocked_pos = false
+	
+	while(row_num_pos < 8):
+		row_num_pos += 1
+		var tile_code = get_col() + str(row_num_pos)
+		if !(is_blocked_pos):
+			is_blocked_pos = check_for_piece(tile_code, board, output)
+		
+		if !(is_blocked_pos):
+			output.append(tile_code)
+	
 		
 	return output
 
 func get_all_horizontal_moves(board, enemy_occupied_tiles, friendly_occupied_tiles):
 	var output = []
-	var col_num = ord(get_col())
 	
 	# negative
-	for n in range(ord("H"), col_num, -1):
-		var tile_code = char(n) + get_row()
-		output.append(tile_code)
-
-	
-	# positive
-	for n in range(ord("A"), col_num):
-		var tile_code = char(n) + get_row()
-		output.append(tile_code)
+	var col_num_neg = ord(get_col())
+	var is_blocked_neg = false
+	while(col_num_neg > ord("A")):
+		col_num_neg -= 1
+		var tile_code = char(col_num_neg) + get_row()
+		if !(is_blocked_neg):
+			is_blocked_neg = check_for_piece(tile_code, board, output)
 		
+		if !(is_blocked_neg):
+			output.append(tile_code)
+
+	# positive
+	var col_num_pos = ord(get_col())
+	var is_blocked_pos = false
+	
+	while(col_num_pos < ord("H")):
+		col_num_pos += 1
+		var tile_code = char(col_num_pos) + get_row()
+		if !(is_blocked_pos):
+			is_blocked_pos = check_for_piece(tile_code, board, output)
+		
+		if !(is_blocked_pos):
+			output.append(tile_code)
 	
 	return output
 

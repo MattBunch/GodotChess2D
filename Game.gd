@@ -6,6 +6,9 @@ const BOARD_SIZE = 480
 # array to hold all tiles
 # REFACTOR: rename to board
 onready var tiles = initialize_board()
+
+# label info
+# TODO: create move history label as well
 onready var label = initialize_info_board()
 
 # tile that user clicks on
@@ -14,16 +17,17 @@ var saved_tile
 # turn system
 var turn = "white"
 var turn_count = 1
+var game_over = false
+var winning_player
 
 # piece has to have its available moves updated after the tiles on the board has all been initialized
 func _ready():
 	update_all_pieces_available_moves()
 
 func clicked_tile(tile_code):
-	# TODO: change these tiles' commands into individual functions 
-	# eg:
-		# process move
-
+	if game_over:
+		return
+	
 	var tile = get_tile_at_code(tile_code)
 
 	if saved_tile == tile:
@@ -32,20 +36,15 @@ func clicked_tile(tile_code):
 
 	elif saved_tile == null:
 		select_tile(tile)
-		# TODO: if tile has piece, show piece's available moves here:
-		
 
 	else:
 		print("tile: ",tile.get_tile_code())
 		print("saved_tile: ",saved_tile.get_tile_code())
-		# TODO: process moves between the two tiles here
 		
-		# if tile is empty that the selected tile can't move to or tile contains piece of the same color,
-#		if (!saved_tile.has_board_piece() || saved_tile.get_board_piece().get_available_moves().has(tile.get_tile_code())):
-#			print("\nSELECTING NEW TILE")
-			
 		# select the new targeted tile
 		# elif target tile is place the piece can move to (empty or contains enemy), process move
+		
+		# TODO: refactor winning conditions, its spaghetti nonsense right now
 		if (saved_tile.has_board_piece() && saved_tile.get_board_piece().get_color() == turn
 		&& saved_tile.get_board_piece().get_available_moves().has(tile.get_tile_code())):
 			# move_piece()
@@ -53,7 +52,13 @@ func clicked_tile(tile_code):
 			var moving_piece = saved_tile.get_board_piece()
 			saved_tile.remove_piece(moving_piece)
 			if (tile.has_board_piece()):
-				tile.remove_piece(tile.get_board_piece())
+				var removing_piece = tile.get_board_piece()
+				if (removing_piece.get_name() == "King"):
+					winning_player = moving_piece.get_color()
+					label.text = winning_player + " is the winner!"
+					game_over = true
+					# end game
+				tile.remove_piece(removing_piece)
 			tile.place_piece(moving_piece, tiles)
 			moving_piece.add_to_move_history(saved_tile.get_tile_code())
 			moving_piece.set_tile_code(tile.get_tile_code())
@@ -66,7 +71,10 @@ func clicked_tile(tile_code):
 #				King moves to non attacked squares, sliding check x-rays the king
 #    			Interposing moves in case of distant sliding check. The moving piece is not absolutely pinned.
 			update_all_pieces_available_moves()
-			check_handler()
+#			TODO: work with check handler somehow
+			var check_handle = check_handler()
+			print("\ncheck_handle!: ")
+			print(check_handle)
 			hide_available_moves()
 			next_turn()
 		# else select new tile
@@ -74,11 +82,14 @@ func clicked_tile(tile_code):
 			print("\nSELECTING NEW TILE")
 			unselect_tile()
 			select_tile(tile)
-			
-		# TODO: function also needs to log move in movements
-		# log_move(tile, saved_tile)
-		# TODO: progress turn
-		# next_turn()
+
+# TODO: work on check_handler for proper check functionality
+func check_handler():
+	for tile in tiles:
+		if tile.has_board_piece():
+			var piece = tile.get_board_piece()
+			if piece.get_name() == "King":
+				return piece.is_in_check(tiles)
 
 func next_turn():
 	turn_count += 1
@@ -86,7 +97,10 @@ func next_turn():
 		turn = "black"
 	elif turn_count % 1 == 0:
 		turn = "white"
-	label.text = get_info_text()
+	var text_input = get_info_text()
+	if (game_over):
+		text_input += "\nWinning player is " + winning_player + "!"
+	label.text = text_input
 
 func select_tile(tile):
 	saved_tile = tile
@@ -151,13 +165,6 @@ func get_tile_at_code(code):
 				return tile
 	
 	return null
-
-func check_handler():
-	for tile in tiles:
-		if tile.has_board_piece():
-			var piece = tile.get_board_piece()
-			if piece.get_name() == "King":
-				print(piece.is_in_check(tiles))
 
 #  _____       _ _   _       _ _          _   _             
 # |_   _|     (_) | (_)     | (_)        | | (_)            
@@ -240,4 +247,27 @@ func initialize_info_board():
 	new_label.rect_position = Vector2(500, 0)
 	add_child(new_label)
 	return new_label
-	
+
+
+#
+#  _____       _                 
+# |  __ \     | |                
+# | |  | | ___| |__  _   _  __ _ 
+# | |  | |/ _ \ '_ \| | | |/ _` |
+# | |__| |  __/ |_) | |_| | (_| |
+# |_____/ \___|_.__/ \__,_|\__, |
+#                           __/ |
+#                          |___/ 
+#
+# DEBUG: 
+#
+#func _input(event):
+#	if Input.is_key_pressed(KEY_D):
+#		for tile in tiles:
+#			if tile.has_board_piece():
+#				var piece = tile.get_board_piece()
+#				var piece_name = piece.get_name()
+#				var valid_names = ["King", "Bishop", "Rook"]
+#				if !(valid_names.has(piece_name)):
+#					tile.remove_piece(piece)
+#					update_all_pieces_available_moves()

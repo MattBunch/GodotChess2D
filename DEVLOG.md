@@ -34,3 +34,9 @@ Pieces added. Sprites are in the 1x folder. Need to delete superfluous assets fr
 Did lots of piece logic and movement today. Got stuck on why the horizontal, vertical and diagonal moves weren't getting stopped by the other pieces.
 
 Need to check for draw too.
+
+## 26/09/2021
+
+Fixed diagonals and horizontals movements.
+
+Built basic win condition. Want to build out check, checkmate and draw functionality for a more complete experience game-wise, game also lacks castling and upgrading pawns right now.
