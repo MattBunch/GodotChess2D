@@ -47,10 +47,10 @@ func clicked_tile(tile_code):
 		# TODO: refactor winning conditions, its spaghetti nonsense right now
 		if (saved_tile.has_board_piece() && saved_tile.get_board_piece().get_color() == turn
 		&& saved_tile.get_board_piece().get_available_moves().has(tile.get_tile_code())):
-			# move_piece()
 			print("\nMOVING PIECE: ", saved_tile.get_tile_code(), tile.get_tile_code())
 			var moving_piece = saved_tile.get_board_piece()
 			saved_tile.remove_piece(moving_piece)
+			# temporary check handler
 			if (tile.has_board_piece()):
 				var removing_piece = tile.get_board_piece()
 				if (removing_piece.get_name() == "King"):
@@ -72,9 +72,12 @@ func clicked_tile(tile_code):
 #    			Interposing moves in case of distant sliding check. The moving piece is not absolutely pinned.
 			update_all_pieces_available_moves()
 #			TODO: work with check handler somehow
-			var check_handle = check_handler()
-			print("\ncheck_handle!: ")
-			print(check_handle)
+			var check_handle = check_handler(turn)
+			print("\ncheck_handle: ")
+			print(check_handle[0])
+			if(check_handle[0]):
+				update_all_pieces_check_moves(check_handle[2])
+#			TODO: check for checkmate, check for draw
 			hide_available_moves()
 			next_turn()
 		# else select new tile
@@ -84,11 +87,11 @@ func clicked_tile(tile_code):
 			select_tile(tile)
 
 # TODO: work on check_handler for proper check functionality
-func check_handler():
+func check_handler(color):
 	for tile in tiles:
 		if tile.has_board_piece():
 			var piece = tile.get_board_piece()
-			if piece.get_name() == "King":
+			if piece.get_name() == "King" && piece.get_color() != color:
 				return piece.is_in_check(tiles)
 
 func next_turn():
@@ -134,6 +137,11 @@ func update_all_pieces_available_moves():
 	for tile in tiles:
 		if (tile.has_board_piece()):
 			tile.get_board_piece().update_available_moves(tiles, get_occupied_tiles(tile, true), get_occupied_tiles(tile, false))
+
+func update_all_pieces_check_moves(check_moves):
+	for tile in tiles:
+		if (tile.has_board_piece()):
+			tile.get_board_piece().remove_moves_for_check(check_moves)
 
 # REFACTOR: for loop is a little repetitive
 func get_occupied_tiles(inputTile, enemy):
@@ -259,15 +267,15 @@ func initialize_info_board():
 #                           __/ |
 #                          |___/ 
 #
-# DEBUG: 
+# DEBUG: for removing pieces
 #
-#func _input(event):
-#	if Input.is_key_pressed(KEY_D):
-#		for tile in tiles:
-#			if tile.has_board_piece():
-#				var piece = tile.get_board_piece()
-#				var piece_name = piece.get_name()
-#				var valid_names = ["King", "Bishop", "Rook"]
-#				if !(valid_names.has(piece_name)):
-#					tile.remove_piece(piece)
-#					update_all_pieces_available_moves()
+func _input(event):
+	if Input.is_key_pressed(KEY_D):
+		for tile in tiles:
+			if tile.has_board_piece():
+				var piece = tile.get_board_piece()
+				var piece_name = piece.get_name()
+				var valid_names = ["King", "Bishop", "Rook"]
+				if !(valid_names.has(piece_name)):
+					tile.remove_piece(piece)
+					update_all_pieces_available_moves()

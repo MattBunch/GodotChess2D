@@ -36,12 +36,13 @@ func remove_friendly_occupied_tiles(input_available_moves, friendly_occupied_til
 
 # remove moves that don't affect check
 func remove_moves_for_check(check_moves):
-	var output
+	var output= []
 	for move in get_available_moves():
 		for check_move in check_moves:
 			if move == check_move:
 				output.append(move)
 	
+	print(output)
 	set_available_moves(output)
 
 # rooks (horizontal, vertical), bishops(diagonal) queens (uses both)

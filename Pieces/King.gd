@@ -12,9 +12,10 @@ func is_in_check(board):
 			if piece.get_color() != get_color():
 				if piece.get_available_moves().has(get_tile_code()):
 					print(get_color() + " king" + " is in check")
-					return [self, piece.get_available_moves()]
+					# TODO: get pieces that cause check
+					return [true, self, piece.get_available_moves()]
 	print(get_color() + " king" + " is NOT in check")
-	return false
+	return [false, self, []]
 
 func update_available_moves(_board, _enemy_occupied_tiles, friendly_occupied_tiles):
 	# just get every surrounding note code
