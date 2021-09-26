@@ -137,6 +137,8 @@ func update_all_pieces_available_moves():
 	for tile in tiles:
 		if (tile.has_board_piece()):
 			tile.get_board_piece().update_available_moves(tiles, get_occupied_tiles(tile, true), get_occupied_tiles(tile, false))
+#			TODO: figure out better way of filtering invalid tiles than this, slows down game too much
+#			tile.get_board_piece().remove_illegitimate_tile_codes(tile.get_board_piece().get_available_moves())
 
 func update_all_pieces_check_moves(check_moves):
 	for tile in tiles:

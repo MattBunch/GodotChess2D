@@ -27,13 +27,6 @@ func move():
 func update_available_moves(board, enemy_occupied_tile_codes, friendly_occupied_tile_codes):
 	pass
 
-# used for pawns, knights, kings,
-func remove_friendly_occupied_tiles(input_available_moves, friendly_occupied_tile_codes):
-	for friendly_tile in friendly_occupied_tile_codes:
-		for move in input_available_moves:
-			if move == friendly_tile:
-				input_available_moves.erase(move)
-
 # remove moves that don't affect check
 func remove_moves_for_check(check_moves):
 	var output= []
@@ -44,6 +37,21 @@ func remove_moves_for_check(check_moves):
 	
 	print(output)
 	set_available_moves(output)
+	
+func get_check_moves(king_tile_code):
+	var king_col = king_tile_code[0]
+	var king_row = king_tile_code[1]
+	for move in get_available_moves():
+		var move_col = move[0]
+		var move_row = move[1]
+	pass
+
+# used for pawns, knights, kings,
+func remove_friendly_occupied_tiles(input_available_moves, friendly_occupied_tile_codes):
+	for friendly_tile in friendly_occupied_tile_codes:
+		for move in input_available_moves:
+			if move == friendly_tile:
+				input_available_moves.erase(move)
 
 # rooks (horizontal, vertical), bishops(diagonal) queens (uses both)
 
@@ -191,18 +199,25 @@ func can_stop_check():
 
 # TODO: remove illegitimate tile codes in the future
 func remove_illegitimate_tile_codes(input_moves):
+	var output = []
+	print("removing tiles for ", get_tile_code())
 	for move in input_moves:
 		var move_col = ord(move[0])
 		var move_row = int(move[1])
-		print(move_col)
-		print(move_row)
-		print(ord("A"))
+		print("move_col: ", move_col)
+		print("move_row: ", move_row)
+#		print(ord("A"))
 		
-		var invalid_col =  (move_col > ord("A") || move_col < ord("H"))
+		var invalid_col =  (move_col < ord("A") || move_col > ord("H"))
 		var invalid_row = (move_row < 1 || move_row > 8)
-		if (invalid_col || invalid_row):
-			print("REMOVING TILE: ", move)
-			input_moves.remove(move)
+		print("invalid_col: ", invalid_col)
+		print("invalid_row: ", invalid_row)
+		if !(invalid_col || invalid_row):
+#			print("REMOVING TILE: ", move)
+#			input_moves.remove(move)
+			output.append(move)
+	
+	set_available_moves(output)
 
 
 # TODO: write out way of blocking movement for rooks, kings, knights, 
