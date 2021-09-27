@@ -71,12 +71,12 @@ func clicked_tile(tile_code):
 #				King moves to non attacked squares, sliding check x-rays the king
 #    			Interposing moves in case of distant sliding check. The moving piece is not absolutely pinned.
 			update_all_pieces_available_moves()
-#			TODO: work with check handler somehow
-			var check_handle = check_handler(turn)
-			print("\ncheck_handle: ")
-			print(check_handle[0])
-			if(check_handle[0]):
-				update_all_pieces_check_moves(check_handle[2])
+#			FIXME: work with check handler somehow
+#			var check_handle = check_handler(turn)
+#			print("\ncheck_handle: ")
+#			print(check_handle[0])
+#			if(check_handle[0]):
+#				update_all_pieces_check_moves(check_handle[2])
 #			TODO: check for checkmate, check for draw
 			hide_available_moves()
 			next_turn()

@@ -40,3 +40,7 @@ Need to check for draw too.
 Fixed diagonals and horizontals movements.
 
 Built basic win condition. Want to build out check, checkmate and draw functionality for a more complete experience game-wise, game also lacks castling and upgrading pawns right now.
+
+## 27/09/2021
+
+Found a fix for removing invalid codes (remove_invalid_codes), but its too slow and adds n^2 time to generating moves. Need to fix the initial code generation to make sure its not messing up when generating the codes in the first place.

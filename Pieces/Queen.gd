@@ -11,5 +11,4 @@ func update_available_moves(board, enemy_occupied_tiles, friendly_occupied_tiles
 	
 	output = horizontal_moves + vertical_moves + diagonal_moves
 	
-	
 	set_available_moves(output)

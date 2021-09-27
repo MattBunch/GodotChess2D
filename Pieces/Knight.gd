@@ -39,7 +39,6 @@ func update_available_moves(board, enemy_occupied_tiles, friendly_occupied_tiles
 	# right down row - 1 col - 2
 	var code_right_up = char(ord(get_col()) - 2)  + str(int(get_row()) + 1)
 	var code_right_down = char(ord(get_col()) - 2)  + str(int(get_row()) - 1)
-
 	
 	var output = [
 		code_up_left,
@@ -51,6 +50,8 @@ func update_available_moves(board, enemy_occupied_tiles, friendly_occupied_tiles
 		code_right_up,
 		code_right_down
 		]
+	
+#	remove_invalid_codes(output)
 	
 	remove_friendly_occupied_tiles(output, friendly_occupied_tiles)
 	

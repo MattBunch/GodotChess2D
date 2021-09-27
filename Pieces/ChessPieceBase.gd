@@ -197,30 +197,33 @@ func check_for_piece(tile_code, board, input_moves):
 func can_stop_check():
 	pass
 
-# TODO: remove illegitimate tile codes in the future
-func remove_illegitimate_tile_codes(input_moves):
-	var output = []
-	print("removing tiles for ", get_tile_code())
-	for move in input_moves:
-		var move_col = ord(move[0])
-		var move_row = int(move[1])
-		print("move_col: ", move_col)
-		print("move_row: ", move_row)
-#		print(ord("A"))
+func remove_invalid_codes(input_array):
+	var moves_to_remove = []
+	for tile_code in input_array:
+		if !(is_valid_code(tile_code)):
+			moves_to_remove.append(tile_code)
 		
-		var invalid_col =  (move_col < ord("A") || move_col > ord("H"))
-		var invalid_row = (move_row < 1 || move_row > 8)
-		print("invalid_col: ", invalid_col)
-		print("invalid_row: ", invalid_row)
-		if !(invalid_col || invalid_row):
-#			print("REMOVING TILE: ", move)
-#			input_moves.remove(move)
-			output.append(move)
-	
-	set_available_moves(output)
+	for i in moves_to_remove:
+		for j in input_array:
+			if i == j:
+				input_array.erase(j)
 
+func is_valid_code(input_code):
+	print("col: ", input_code[0])
+	print("row: ", input_code[1])
+	print("length: "+str(input_code.length()))
+	if input_code.length() > 2:
+		return false
+	return is_valid_col(ord(input_code[0])) && is_valid_row(int(input_code[1]))
 
-# TODO: write out way of blocking movement for rooks, kings, knights, 
+func is_valid_col(col):
+	print(col)
+	print(ord("A"))
+	print(ord("H"))
+	return col >= ord("A") && col <= ord("H")
+
+func is_valid_row(row):
+	return row > 1 && row < 8
 
 func get_color():
 	return color
