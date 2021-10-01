@@ -14,9 +14,11 @@ func move():
 	pass
 
 func update_available_moves(board, enemy_occupied_tiles, friendly_occupied_tiles):
-	
 #	var code_above_take_right = char(ord(get_col()) + 1)  + str(int(get_row()) + 1)
 #	var code_above_take_left = char(ord(get_col()) - 1) + str(int(get_row()) + 1) 
+	
+	var output = []
+	
 	set_available_moves([])
 	# up left = row + 2 col - 1 
 	# up right = row + 2 col + 1
@@ -39,19 +41,25 @@ func update_available_moves(board, enemy_occupied_tiles, friendly_occupied_tiles
 	# right down row - 1 col - 2
 	var code_right_up = char(ord(get_col()) - 2)  + str(int(get_row()) + 1)
 	var code_right_down = char(ord(get_col()) - 2)  + str(int(get_row()) - 1)
-	
-	var output = [
-		code_up_left,
-		code_up_right,
-		code_down_left,
-		code_down_right,
-		code_left_up,
-		code_left_down,
-		code_right_up,
-		code_right_down
-		]
-	
+
 #	remove_invalid_codes(output)
+# new way of doing codes, don't know if its faster
+	if(is_valid_code(code_up_left)):
+		output.append(code_up_left)
+	if(is_valid_code(code_up_right)):
+		output.append(code_up_right)
+	if(is_valid_code(code_down_left)):
+		output.append(code_down_left)
+	if(is_valid_code(code_down_right)):
+		output.append(code_down_right)
+	if(is_valid_code(code_left_up)):
+		output.append(code_left_up)
+	if(is_valid_code(code_left_down)):
+		output.append(code_left_down)
+	if(is_valid_code(code_right_up)):
+		output.append(code_right_up)
+	if(is_valid_code(code_right_down)):
+		output.append(code_right_down)
 	
 	remove_friendly_occupied_tiles(output, friendly_occupied_tiles)
 	
